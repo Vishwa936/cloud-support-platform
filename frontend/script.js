@@ -9,17 +9,38 @@ async function loadTickets(){
 
     let html = "";
 
-    tickets.forEach(ticket => {
+  tickets.forEach(ticket => {
 
-        html += `
-        <div>
-            <b>${ticket.customer}</b><br>
-            ${ticket.issue}<br>
-            Status: ${ticket.status}
-            <hr>
-        </div>
-        `;
-    });
+    const date = ticket.timestamp
+    ? new Date(ticket.timestamp).toLocaleString(
+        'en-AU',
+        {
+            timeZone: 'Australia/Sydney',
+            day:'numeric',
+            month:'short',
+            year:'numeric',
+            hour:'numeric',
+            minute:'2-digit'
+        }
+    )
+    : "Older Ticket";
+
+    html += `
+    <div class="ticket-card">
+        
+        <small>${date}</small> 
+
+        <h3>${ticket.customer}</h3>
+
+        <p>${ticket.issue}</p>
+
+        <span class="status">
+            ${ticket.status}
+        </span>
+
+    </div>
+    `;
+});
 
     document.getElementById("tickets").innerHTML = html;
 }
@@ -46,7 +67,15 @@ async function createTicket(){
         })
     });
 
+    const msg = document.getElementById("message");
+
+    msg.innerHTML = "Ticket created successfully!";
+    msg.style.display = "block";
+
+    document.getElementById("customer").value = "";
+    document.getElementById("issue").value = "";
     loadTickets();
+
 }
 
 loadTickets();
